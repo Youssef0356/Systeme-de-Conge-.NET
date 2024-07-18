@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - testingdatabase</title>
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="m-0 p-0 w-full">
+    <header>
+        <nav class="bg-black shadow-lg">
+            <div class="container mx-auto flex flex-wrap items-center justify-between p-4">
+                <div class="flex items-center justify-between w-full sm:w-auto">
+                    <a asp-area="" asp-controller="Utilisateur" asp-action="Home" class="font-bold text-2xl sm:text-4xl text-white">Perfaxis</a>
+                    <button class="sm:hidden text-white" id="navbar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <div class="w-full sm:flex sm:items-center sm:w-auto hidden" id="navbar-menu">
+                    <ul class="flex flex-col sm:flex-row text-white gap-2 sm:gap-4">
+                        <li>
+                            <partial name="_loginPartial" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div>
+        <main role="main" class="bg-gray-100 m-0 h-full w-full">
+            
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+    <script src="https://kit.fontawesome.com/6234cd1732.js" crossorigin="anonymous"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.getElementById('navbar-toggle').addEventListener('click', function () {
+            var menu = document.getElementById('navbar-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

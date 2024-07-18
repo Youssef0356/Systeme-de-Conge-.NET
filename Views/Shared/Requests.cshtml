@@ -1,0 +1,170 @@
+﻿@model List<testingdatabase.Models.LeaveRequest>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+
+    var usersInEmployeeRole = await UserManager.GetUsersInRoleAsync("employee");
+}
+@{
+    ViewData["Title"] = "Requests";
+}
+
+<section class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <h1 class="text-4xl font-extrabold text-center my-8 text-gray-900">
+        Les Demandes De Congé
+    </h1>
+
+    <div class="mb-6">
+        <label for="statusFilter" class="block text-sm font-medium text-gray-700">Filtrer</label>
+        <select id="statusFilter" onchange="applyFilter()" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option value="all">Tous</option>
+            <option value="accepted">Accepté</option>
+            <option value="refused">Refusé</option>
+            <option value="pending">En instance</option>
+        </select>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <p class="text-center text-gray-500">Aucune demande de congé n'a été trouvée.</p>
+    }
+    else
+    {
+        <div class="overflow-x-auto">
+            <table id="leaveRequestsTable" class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Nom
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Description
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date de Début
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date de Fin
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Sold
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Statut
+                        </th>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Action
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var leaveRequest in Model)
+                    {
+                        <tr data-status="@leaveRequest.Status">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if (leaveRequest.UserId != null)
+                                {
+                                    var user = await UserManager.FindByIdAsync(leaveRequest.UserId);
+                                    if (user != null)
+                                    {
+                                        @user.UserName
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-500">Utilisateur inconnu</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-gray-500">Aucun utilisateur associé</span>
+                                }
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @leaveRequest.Description
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @leaveRequest.StartDate.ToString("yyyy-MM-dd")
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @leaveRequest.EndDate.ToString("yyyy-MM-dd")
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @leaveRequest.Sold Days
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="   py-0.5 rounded text-md font-medium ">
+                                    @leaveRequest.Status
+                                </span>
+                            </td>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    @if (leaveRequest.Status == "Pending")
+                                    {
+                                        <form asp-action="ApproveAndReject" asp-route-id="@leaveRequest.Id" method="post" class="inline">
+                                            <input type="hidden" name="status" value="Accepted" />
+                                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2">Accept</button>
+                                        </form>
+                                        <form asp-action="ApproveAndReject" asp-route-id="@leaveRequest.Id" method="post" class="inline">
+                                            <input type="hidden" name="status" value="Refused" />
+                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Decline</button>
+                                        </form>
+                                        <form asp-action="Delete" asp-route-id="@leaveRequest.Id" onsubmit="return confirm('Vous étes Sur de supprimer ce demande?');" class="inline">
+                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full ml-2">X</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-500">Action closed for this request</span>
+                                        <form asp-action="Delete" asp-route-id="@leaveRequest.Id" onsubmit="return confirm('Vous étes Sur de supprimer ce demande?');" class="inline">
+                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full ml-2">X</button>
+                                        </form>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@if (TempData["FormSubmitted"] != null)
+{
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline">Votre demande de congé a été soumise avec succès.</span>
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <button type="button" class="text-green-700 hover:text-green-900" onclick="this.parentElement.style.display='none';">
+                <svg class="fill-current h-4 w-4" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <title>Close</title>
+                    <path d="M14.348 5.652a.5.5 0 010 .707l-8 8a.5.5 0 11-.707-.707l8-8a.5.5 0 01.707 0z" />
+                    <path d="M5.652 5.652a.5.5 0 000 .707l8 8a.5.5 0 10.707-.707l-8-8a.5.5 0 00-.707 0z" />
+                </svg>
+            </button>
+        </span>
+    </div>
+}
+
+<script>
+    function applyFilter() {
+        var status = document.getElementById("statusFilter").value.toLowerCase();
+        var rows = document.getElementById("leaveRequestsTable").rows;
+
+        for (var i = 1; i < rows.length; i++) {
+            var rowStatus = rows[i].getAttribute("data-status").toLowerCase();
+
+            if (status === "all" || rowStatus === status) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+</script>

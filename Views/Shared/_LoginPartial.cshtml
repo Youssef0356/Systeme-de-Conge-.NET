@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Navbar";
+}
+<ul class="flex row items-center justify-center">
+    @if (User != null && SignInManager.IsSignedIn(User))
+    {
+        @if (User.IsInRole("admin"))
+        {
+            <li class="text-center">
+                <a class="flex items-center mx-4" asp-area="Identity" asp-action="LesDemandesDeConge" asp-controller="LeaveRequest">
+                    <div><i class="fa-regular fa-message"></i></div>
+                    
+                </a>
+            </li>
+            <li class="mx-4">
+                <a id="manage" class="nav-link" asp-area="Identity" asp-action="Home" asp-controller="Utilisateur" title="Manage">| administrateur |</a>
+            </li>
+            <li class="mx-4">
+                <form id="logoutForm" asp-area="Identity" asp-action="Logout" asp-route-returnUrl="@Url.Action("Home", "Utilisateur")">
+                    <button id="logout" type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded">se déconnecter</button>
+                </form>
+            </li>
+        }
+        else if (User.IsInRole("employee"))
+        {
+            <li class="text-center">
+                <a class="flex items-center mx-4" asp-area="Identity" asp-action="LesDemandesDeConge" asp-controller="LeaveRequest">
+                    <div><i class="fa-regular fa-message"></i></div>
+
+                </a>
+            </li>
+            <li class="mx-4">
+                <a id="manage" class="nav-link" asp-area="Identity" asp-action="Home" asp-controller="Utilisateur" title="Manage">Employée |</a>
+            </li>
+            <li class="mx-4">
+                <form id="logoutForm" asp-area="Identity" asp-action="Logout" asp-route-returnUrl="@Url.Action("Home", "Utilisateur")">
+                    <button id="logout" type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">se déconnecter</button>
+                </form>
+            </li>
+        }
+    }
+    else
+    {
+        
+        <li class="mx-4">
+            <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="mx-4">
+            <a class="nav-link" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

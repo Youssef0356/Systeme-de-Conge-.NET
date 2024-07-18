@@ -1,0 +1,129 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var usersInemployeeRole = await UserManager.GetUsersInRoleAsync("employee");
+}
+@{
+    ViewData["Title"] = "Home";
+}
+
+@if (User.Identity.IsAuthenticated && Model == null)
+{
+    if (User.IsInRole("employee"))
+    {
+        <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+            <h1 class="text-6xl font-bold text-center my-8">
+                Bonjour @currentUser.UserName !
+            </h1>
+            <partial name="EmployeeField" />
+        </div>
+    }
+    else if (User.IsInRole("admin"))
+    {
+        <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+            <h1 class="text-6xl font-bold text-center my-8">
+                Bonjour Admin !
+            </h1>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Nom
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach (var user in usersInemployeeRole)
+                        {
+                            <tr class="transition-all hover:bg-gray-100">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @user.Id
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @user.UserName
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @user.Email
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap flex items-center space-x-2">
+                                    <a asp-action="Editer" asp-route-id="@user.Id" class="text-blue-500 hover:text-blue-700 transition">Edit</a>
+                                    <form asp-action="Delete" asp-route-id="@user.Id" onsubmit="return confirm('Are you sure you want to delete this user?');" class="inline">
+                                        <button type="submit" class="text-red-500 hover:text-red-700 transition">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto text-center">
+            <h1 class="text-6xl font-bold text-center my-8">
+                Welcome to Perfaxis
+            </h1>
+            <p class="text-gray-700 mb-8 leading-relaxed">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel dolor mauris. Ut nec malesuada leo. Nam a risus dapibus, efficitur justo quis, suscipit dui. Quisque nec velit arcu.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Placeholder Title 1</h2>
+                    <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec malesuada leo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Placeholder Title 2</h2>
+                    <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec malesuada leo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Placeholder Title 3</h2>
+                    <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec malesuada leo.</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto text-center">
+        <h1 class="text-6xl font-bold text-center my-8">
+            Welcome to Perfaxis
+        </h1>
+        <p class="text-gray-700 mb-8 leading-relaxed">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel dolor mauris. Ut nec malesuada leo. Nam a risus dapibus, efficitur justo quis, suscipit dui. Quisque nec velit arcu.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-2">Placeholder Title 1</h2>
+                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec malesuada leo.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-2">Placeholder Title 2</h2>
+                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec malesuada leo.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-2">Placeholder Title 3</h2>
+                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec malesuada leo.</p>
+            </div>
+        </div>
+    </div>
+}
