@@ -1,0 +1,41 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="flex justify-center items-center h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <form id="account" method="post">
+            <h2 class="font-bold text-2xl mb-5">Log in to your account</h2>
+            <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-3" role="alert"></div>
+            <div class="mb-4">
+                <label asp-for="Input.Email" class="block text-gray-700">Email</label>
+                <input asp-for="Input.Email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="username" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Input.Password" class="block text-gray-700">Password</label>
+                <input asp-for="Input.Password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" autocomplete="current-password" placeholder="password" />
+                <span asp-validation-for="Input.Password" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4 flex items-center">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <label asp-for="Input.RememberMe" class="ml-2 block text-gray-700">@Html.DisplayNameFor(m => m.Input.RememberMe)</label>
+            </div>
+            <div class="mb-4">
+                <button id="login-submit" type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Log in</button>
+            </div>
+            <div class="text-center">
+
+                <p class="mb-1">
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-blue-500 hover:underline">Register as a new user</a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

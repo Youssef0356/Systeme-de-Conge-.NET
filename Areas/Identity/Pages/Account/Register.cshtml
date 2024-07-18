@@ -1,0 +1,44 @@
+﻿    @page
+    @model RegisterModel
+    @using Microsoft.AspNetCore.Identity
+
+
+    @{
+        ViewData["Title"] = "Register";
+    }
+
+    <div class="p-2 sm:p-5 flex items-center justify-center text-lg sm:text-xl">
+        <form id="registerForm" asp-page-handler="Register" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-center pb-8 text-xl sm:text-4xl font-bold pt-4">Create a new account.</h2>
+            <hr class="mb-6" />
+            <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-4" role="alert"></div>
+            <div class="grid grid-cols-1 gap-6">
+            <div class="flex flex-col">
+                <label asp-for="Input.UserName" class="mb-2">Username</label>
+                <input asp-for="Input.UserName" autocomplete="username" aria-required="true" placeholder="Username" class="p-2 border border-gray-300 rounded-md" />
+                <span asp-validation-for="Input.UserName" class="text-red-500 text-sm"></span>
+            </div>
+                <div class="flex flex-col">
+                    <label asp-for="Input.Email" class="mb-2">Email</label>
+                    <input asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com" class="p-2 border border-gray-300 rounded-md" />
+                    <span asp-validation-for="Input.Email" class="text-red-500 text-sm"></span>
+                </div>
+
+                <div class="flex flex-col">
+                    <label asp-for="Input.Password" class="mb-2">Password</label>
+                    <input asp-for="Input.Password" autocomplete="new-password" aria-required="true" placeholder="password" class="p-2 border border-gray-300 rounded-md" />
+                    <span asp-validation-for="Input.Password" class="text-red-500 text-sm"></span>
+                </div>
+                <div class="flex flex-col">
+                    <label asp-for="Input.ConfirmPassword" class="mb-2">Confirm Password</label>
+                    <input asp-for="Input.ConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="password" class="p-2 border border-gray-300 rounded-md" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-red-500 text-sm"></span>
+                </div>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-6">Register</button>
+        </form>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
